@@ -1,3 +1,4 @@
+pandas
 speedtest-cli
 python-dotenv
 requests
