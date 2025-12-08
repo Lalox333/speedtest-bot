@@ -13,7 +13,7 @@ class SpeedTestTest:
         self.server_country = None
         self.server_city = None
 
-    def start_test(self):
+    def start_test(self) -> dict:
         try:
             s = speedtest.Speedtest(secure=True)
             s.get_servers(servers=self.servers)

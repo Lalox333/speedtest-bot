@@ -7,7 +7,7 @@ class SpeedTestFormer:
         self.server_country = server_country
         self.server_city = server_city
 
-    def return_formatted(self):
+    def return_formatted(self) -> dict:
 
         return {
             "download":self.download,
