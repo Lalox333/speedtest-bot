@@ -31,7 +31,7 @@ for attempt in range(RETRY_COUNT):
             server_city=speedtest.server_city
         )
 
-        csv_logger = CSVLogger(speedtest_former,"csv_logger.csv")
+        csv_logger = CSVLogger(speedtest_former,"data/csv_logger.csv")
         csv_logger.append()
 
         formatted_result = speedtest_former.return_formatted()
