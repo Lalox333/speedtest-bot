@@ -14,14 +14,19 @@ class SpeedTestTest:
         self.server_city = None
 
     def start_test(self):
-        s = speedtest.Speedtest(secure=True)
-        s.get_servers(servers=self.servers)
-        s.get_best_server()
-        s.download(threads=self.threads)
-        s.upload(threads=self.threads)
-        s.results.share()
+        try:
+            s = speedtest.Speedtest(secure=True)
+            s.get_servers(servers=self.servers)
+            s.get_best_server()
+            s.download(threads=self.threads)
+            s.upload(threads=self.threads)
+            s.results.share()
+            return s.results.dict()
+        except Exception as e:
+            return {"error":str(e)}
 
-        return s.results.dict()
+
+
 
     def parse_result(self,result:dict):
         self.download = result["download"]
