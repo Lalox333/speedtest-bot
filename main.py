@@ -45,5 +45,6 @@ for attempt in range(RETRY_COUNT):
         🗺️ Server Land:        *{formatted_result["server_country"]}*
         🚩 Server Standort:    *{formatted_result["server_city"]}*
         ''')
+        telegram_messages.send_file("speed_test/csv_logger.csv","Ding! Deine Speedtest übersicht ist da.")
         break
 

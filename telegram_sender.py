@@ -22,3 +22,16 @@ class Telegram:
         response = requests.post(base_url,data=payload)
         response.raise_for_status()
         pprint(response.json())
+
+    def send_file(self,file_path:str,caption:str):
+        base_url = f"https://api.telegram.org/bot{self.telegram_token}/sendDocument"
+        payload = {
+            "chat_id":self.telegram_chat_id,
+            "caption":caption
+        }
+        with open(file_path,mode="rb") as file:
+            requests.post(base_url,data=payload,files={
+                "document":file
+            })
+
+
