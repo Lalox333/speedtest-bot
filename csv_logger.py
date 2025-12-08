@@ -1,6 +1,7 @@
 import pandas as pd
 from speedtest_former import SpeedTestFormer
 from pathlib import Path
+from datetime import datetime
 
 class CSVLogger:
 
@@ -12,7 +13,20 @@ class CSVLogger:
         return Path(self.filename).is_file()
 
     def append(self):
-        data = pd.DataFrame([self.speed_test_former.return_formatted()])
+        now = datetime.strftime(datetime.now(),"%Y-%m-%d %H:%M")
+        data_dict = self.speed_test_former.return_formatted()
+        data_dict["date"] = now
+
+        ordered_dict = {
+            "date": data_dict["date"],
+            "download": data_dict["download"],
+            "upload": data_dict["upload"],
+            "ping": data_dict["ping"],
+            "country": data_dict["country"],
+            "city": data_dict["city"],
+        }
+
+        data = pd.DataFrame([ordered_dict])
         if self.ensure_exist():
             data.to_csv(self.filename,mode="a",header=False,index=False)
         else:
