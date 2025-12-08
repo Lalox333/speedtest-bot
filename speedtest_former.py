@@ -1,0 +1,18 @@
+class SpeedTestFormer:
+
+    def __init__(self, download, upload, ping, server_country, server_city):
+        self.download = round(download / 1_000_000,2)
+        self.upload = round(upload / 1_000_000,2)
+        self.ping = ping
+        self.server_country = server_country
+        self.server_city = server_city
+
+    def return_formatted(self):
+
+        return {
+            "download":self.download,
+            "upload":self.upload,
+            "ping":f"{self.ping} ms",
+            "server_country":self.server_country,
+            "server_city":self.server_city
+        }

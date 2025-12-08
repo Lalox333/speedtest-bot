@@ -1,0 +1,36 @@
+import speedtest
+
+class SpeedTestTest:
+
+    def __init__(self):
+        self.threads = None
+        self.servers = []
+
+        self.download = None
+        self.upload = None
+        self.ping = None
+
+        self.server_country = None
+        self.server_city = None
+
+    def start_test(self):
+        s = speedtest.Speedtest(secure=True)
+        s.get_servers(servers=self.servers)
+        s.get_best_server()
+        s.download(threads=self.threads)
+        s.upload(threads=self.threads)
+        s.results.share()
+
+        return s.results.dict()
+
+    def parse_result(self,result:dict):
+        self.download = result["download"]
+        self.upload = result["upload"]
+        self.ping = result['ping']
+
+        self.server_country = result["server"]["country"]
+        self.server_city = result["server"]["name"]
+
+
+
+
