@@ -17,7 +17,7 @@ class SpeedTestTest:
         try:
             s = speedtest.Speedtest(secure=True)
             s.get_servers(servers=self.servers)
-            s.get_best_server()
+            s.get_closest_servers()
             s.download(threads=self.threads)
             s.upload(threads=self.threads)
             s.results.share()
