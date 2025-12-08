@@ -4,7 +4,7 @@ from pprint import pprint
 from dotenv import load_dotenv
 import requests
 
-class Telegram:
+class TelegramClient:
 
     def __init__(self):
         load_dotenv()

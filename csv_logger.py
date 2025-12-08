@@ -1,11 +1,11 @@
 import pandas as pd
-from speedtest_former import SpeedTestFormer
+from speedtest_formatter import SpeedTestFormatter
 from pathlib import Path
 from datetime import datetime
 
 class CSVLogger:
 
-    def __init__(self,speed_test_former:SpeedTestFormer,filename:str):
+    def __init__(self, speed_test_former:SpeedTestFormatter, filename:str):
         self.speed_test_former = speed_test_former
         self.filename = filename
 

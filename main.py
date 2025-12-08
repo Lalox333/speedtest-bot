@@ -1,11 +1,11 @@
 import time
-from telegram_sender import Telegram
-from ownspeedtest import SpeedTestTest
-from speedtest_former import SpeedTestFormer
+from telegram_client import TelegramClient
+from speedtest_runner import SpeedTestRunner
+from speedtest_formatter import SpeedTestFormatter
 from csv_logger import CSVLogger
 
 def main():
-    telegram_messages = Telegram()
+    telegram_client = TelegramClient()
 
     # if "error" in raw_result:
     RETRY_COUNT = 3
@@ -13,29 +13,29 @@ def main():
 
     for attempt in range(RETRY_COUNT):
 
-        speedtest = SpeedTestTest()
-        raw_result = speedtest.start_test()
+        runner = SpeedTestRunner()
+        raw_result = runner.run()
         if "error" in raw_result:
             if attempt == RETRY_COUNT - 1:
-                telegram_messages.send_message(f"😭🔄️ *Speedtest fehlgeschlagen:* Error: {raw_result['error']}")
+                telegram_client.send_message(f"😭🔄️ *Speedtest fehlgeschlagen:* Error: {raw_result['error']}")
             else:
                 time.sleep(RETRY_WAIT)
                 continue
         else:
-            speedtest.parse_result(raw_result)
-            speedtest_former = SpeedTestFormer(
-                download=speedtest.download,
-                upload=speedtest.upload,
-                ping=speedtest.ping,
-                server_country=speedtest.server_country,
-                server_city=speedtest.server_city
+            runner.parse_result(raw_result)
+            formatter = SpeedTestFormatter(
+                download=runner.download,
+                upload=runner.upload,
+                ping=runner.ping,
+                server_country=runner.server_country,
+                server_city=runner.server_city
             )
 
-            csv_logger = CSVLogger(speedtest_former, "/speed_test/data/csv_logger.csv")
+            csv_logger = CSVLogger(formatter, "/speed_test/data/csv_logger.csv")
             csv_logger.append()
 
-            formatted_result = speedtest_former.return_formatted()
-            telegram_messages.send_message(f'''
+            formatted_result = formatter.return_formatted()
+            telegram_client.send_message(f'''
             🏃Hallo *Kevin*, dein *Speedtest* wurde ausgeführt.🏃‍➡️
 
             ⬇️ Download:           *{formatted_result["download"]}* Mbps
@@ -45,7 +45,7 @@ def main():
             🗺️ Server Land:        *{formatted_result["server_country"]}*
             🚩 Server Standort:    *{formatted_result["server_city"]}*
             ''')
-            telegram_messages.send_file("/speed_test/data/csv_logger.csv", "Ding! Deine Speedtest übersicht ist da.")
+            telegram_client.send_file("/speed_test/data/csv_logger.csv", "Ding! Deine Speedtest übersicht ist da.")
             break
 
 if __name__ == "__main__":

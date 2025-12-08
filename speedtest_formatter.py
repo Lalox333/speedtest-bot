@@ -1,4 +1,4 @@
-class SpeedTestFormer:
+class SpeedTestFormatter:
 
     def __init__(self, download, upload, ping, server_country, server_city):
         self.download = round(download / 1_000_000,2)
