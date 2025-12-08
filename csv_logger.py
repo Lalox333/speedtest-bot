@@ -22,8 +22,8 @@ class CSVLogger:
             "download": data_dict["download"],
             "upload": data_dict["upload"],
             "ping": data_dict["ping"],
-            "country": data_dict["country"],
-            "city": data_dict["city"],
+            "country": data_dict["server_country"],
+            "city": data_dict["server_city"],
         }
 
         data = pd.DataFrame([ordered_dict])
