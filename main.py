@@ -5,8 +5,20 @@ from speedtest_formatter import SpeedTestFormatter
 from csv_logger import CSVLogger
 import yaml
 from pathlib import Path
+import logging
 
 def main() -> None:
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(module)s - %(message)s',
+        handlers={
+            logging.StreamHandler(),
+            logging.FileHandler("speedtest.log",mode="a",encoding='utf-8')
+        }
+    )
+
+    logging.info("Speedtest-Bot started...")
+
 
     with open("config.yml",mode="r") as f:
         config = yaml.safe_load(f)
@@ -26,8 +38,10 @@ def main() -> None:
         raw_result = runner.run()
         if "error" in raw_result:
             if attempt == RETRY_COUNT - 1:
+                logging.error(f"Speedtest failed after {RETRY_COUNT} tries. Reason: {raw_result['error']}")
                 telegram_client.send_message(f"😭🔄️ *Speedtest fehlgeschlagen:* Error: {raw_result['error']}")
             else:
+                logging.warning(f"Attempt {attempt +1}/{RETRY_COUNT} failed. Wait {RETRY_WAIT} seconds. (error:{raw_result['error']})")
                 time.sleep(RETRY_WAIT)
                 continue
         else:

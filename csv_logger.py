@@ -2,10 +2,11 @@ import pandas as pd
 from speedtest_formatter import SpeedTestFormatter
 from pathlib import Path
 from datetime import datetime
+import logging
 
 class CSVLogger:
 
-    def __init__(self, speed_test_former:SpeedTestFormatter, filename:str) -> None:
+    def __init__(self, speed_test_former:SpeedTestFormatter, filename:Path) -> None:
         self.speed_test_former = speed_test_former
         self.filename = filename
 
@@ -29,5 +30,7 @@ class CSVLogger:
         data = pd.DataFrame([ordered_dict])
         if self.ensure_exist():
             data.to_csv(self.filename,mode="a",header=False,index=False)
+            logging.info(f"Successfull logged: {data_dict['download']} Mbps Down / {data_dict['upload']} Mpbs Up")
         else:
+            logging.info("CSVLogger File did not exists, created CSVLogger File")
             data.to_csv(self.filename, mode="w", header=True,index=False)
