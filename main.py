@@ -3,13 +3,22 @@ from telegram_client import TelegramClient
 from speedtest_runner import SpeedTestRunner
 from speedtest_formatter import SpeedTestFormatter
 from csv_logger import CSVLogger
+import yaml
+from pathlib import Path
 
-def main():
+def main() -> None:
+
+    with open("config.yml",mode="r") as f:
+        config = yaml.safe_load(f)
+
+    BASE_DIR = Path(__file__).parent
+    csv_path = BASE_DIR / config["csv_logger"]["path"]
+
     telegram_client = TelegramClient()
 
     # if "error" in raw_result:
-    RETRY_COUNT = 3
-    RETRY_WAIT = 5
+    RETRY_COUNT = config["speedtest"]["retry_count"]
+    RETRY_WAIT = config["speedtest"]["retry_wait"]
 
     for attempt in range(RETRY_COUNT):
 
@@ -31,7 +40,7 @@ def main():
                 server_city=runner.server_city
             )
 
-            csv_logger = CSVLogger(formatter, "/speed_test/data/csv_logger.csv")
+            csv_logger = CSVLogger(formatter, csv_path)
             csv_logger.append()
 
             formatted_result = formatter.return_formatted()
@@ -45,7 +54,7 @@ def main():
             🗺️ Server Land:        *{formatted_result["server_country"]}*
             🚩 Server Standort:    *{formatted_result["server_city"]}*
             ''')
-            telegram_client.send_file("/speed_test/data/csv_logger.csv", "Ding! Deine Speedtest übersicht ist da.")
+            telegram_client.send_file(csv_path, "Ding! Deine Speedtest übersicht ist da.")
             break
 
 if __name__ == "__main__":

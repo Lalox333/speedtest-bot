@@ -2,7 +2,7 @@ import speedtest
 
 class SpeedTestRunner:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.threads = None
         self.servers = []
 
@@ -28,7 +28,7 @@ class SpeedTestRunner:
 
 
 
-    def parse_result(self,result:dict):
+    def parse_result(self,result:dict) -> None:
         self.download = result["download"]
         self.upload = result["upload"]
         self.ping = result['ping']

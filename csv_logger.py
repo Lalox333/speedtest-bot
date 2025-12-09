@@ -5,14 +5,14 @@ from datetime import datetime
 
 class CSVLogger:
 
-    def __init__(self, speed_test_former:SpeedTestFormatter, filename:str):
+    def __init__(self, speed_test_former:SpeedTestFormatter, filename:str) -> None:
         self.speed_test_former = speed_test_former
         self.filename = filename
 
     def ensure_exist(self) -> bool:
         return Path(self.filename).is_file()
 
-    def append(self):
+    def append(self) -> None:
         now = datetime.strftime(datetime.now(),"%Y-%m-%d %H:%M")
         data_dict = self.speed_test_former.return_formatted()
         data_dict["date"] = now

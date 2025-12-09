@@ -1,3 +1,4 @@
+pyyaml
 pandas
 speedtest-cli
 python-dotenv

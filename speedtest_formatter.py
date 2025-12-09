@@ -1,6 +1,6 @@
 class SpeedTestFormatter:
 
-    def __init__(self, download, upload, ping, server_country, server_city):
+    def __init__(self, download:int, upload:int, ping:int, server_country:str, server_city:str) -> None:
         self.download = round(download / 1_000_000,2)
         self.upload = round(upload / 1_000_000,2)
         self.ping = ping

@@ -1,0 +1,6 @@
+speedtest:
+  retry_count: 3
+  retry_wait: 5
+
+csv_logger:
+  path: "data/csv_logger.csv"
