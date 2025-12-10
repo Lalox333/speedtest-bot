@@ -1,5 +1,5 @@
 import pandas as pd
-from speedtest_formatter import SpeedTestFormatter
+from core.speedtest_formatter import SpeedTestFormatter
 from pathlib import Path
 from datetime import datetime
 import logging

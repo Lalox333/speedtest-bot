@@ -1,11 +1,9 @@
-import time
-from telegram_client import TelegramClient
-from speedtest_runner import SpeedTestRunner
-from speedtest_formatter import SpeedTestFormatter
-from csv_logger import CSVLogger
+from infrastructure.telegram_client import TelegramClient
+from core.speedtest_runner import SpeedTestRunner
 import yaml
 from pathlib import Path
 import logging
+from app.speedtest_service import SpeedtestService
 
 def main() -> None:
     logging.basicConfig(
@@ -13,63 +11,36 @@ def main() -> None:
         format='%(asctime)s - %(levelname)s - %(module)s - %(message)s',
         handlers={
             logging.StreamHandler(),
-            logging.FileHandler("speedtest.log",mode="a",encoding='utf-8')
+            logging.FileHandler("logs/speedtest.log",mode="a",encoding='utf-8')
         }
     )
 
     logging.info("Speedtest-Bot started...")
 
-
-    with open("config.yml",mode="r") as f:
+    with open("config/config.yml", mode="r") as f:
         config = yaml.safe_load(f)
 
     BASE_DIR = Path(__file__).parent
     csv_path = BASE_DIR / config["csv_logger"]["path"]
 
-    telegram_client = TelegramClient()
-
-    # if "error" in raw_result:
     RETRY_COUNT = config["speedtest"]["retry_count"]
     RETRY_WAIT = config["speedtest"]["retry_wait"]
 
-    for attempt in range(RETRY_COUNT):
+    telegram_client = TelegramClient()
+    speedtest_runner = SpeedTestRunner()
 
-        runner = SpeedTestRunner()
-        raw_result = runner.run()
-        if "error" in raw_result:
-            if attempt == RETRY_COUNT - 1:
-                logging.error(f"Speedtest failed after {RETRY_COUNT} tries. Reason: {raw_result['error']}")
-                telegram_client.send_message(f"😭🔄️ *Speedtest fehlgeschlagen:* Error: {raw_result['error']}")
-            else:
-                logging.warning(f"Attempt {attempt +1}/{RETRY_COUNT} failed. Wait {RETRY_WAIT} seconds. (error:{raw_result['error']})")
-                time.sleep(RETRY_WAIT)
-                continue
-        else:
-            runner.parse_result(raw_result)
-            formatter = SpeedTestFormatter(
-                download=runner.download,
-                upload=runner.upload,
-                ping=runner.ping,
-                server_country=runner.server_country,
-                server_city=runner.server_city
-            )
+    service = SpeedtestService(
+        runner=speedtest_runner,
+        messenger=telegram_client,
+        retry_count=RETRY_COUNT,
+        retry_wait=RETRY_WAIT,
+        csv_path=csv_path
+    )
 
-            csv_logger = CSVLogger(formatter, csv_path)
-            csv_logger.append()
+    service.run()
 
-            formatted_result = formatter.return_formatted()
-            telegram_client.send_message(f'''
-            🏃Hallo *Kevin*, dein *Speedtest* wurde ausgeführt.🏃‍➡️
 
-            ⬇️ Download:           *{formatted_result["download"]}* Mbps
-            ⬆️ Upload:             *{formatted_result["upload"]}* Mbps
-            ⌚ Ping:               *{formatted_result["ping"]}*
 
-            🗺️ Server Land:        *{formatted_result["server_country"]}*
-            🚩 Server Standort:    *{formatted_result["server_city"]}*
-            ''')
-            telegram_client.send_file(csv_path, "Ding! Deine Speedtest übersicht ist da.")
-            break
 
 if __name__ == "__main__":
     main()
