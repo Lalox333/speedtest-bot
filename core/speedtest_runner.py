@@ -1,17 +1,11 @@
 import speedtest
+from core.protocols.runner_protocol import RunnerProtocol
 
-class SpeedTestRunner:
+class SpeedTestRunner(RunnerProtocol):
 
     def __init__(self) -> None:
         self.threads = None
         self.servers = []
-
-        self.download = None
-        self.upload = None
-        self.ping = None
-
-        self.server_country = None
-        self.server_city = None
 
     def run(self) -> dict:
         try:
@@ -28,13 +22,14 @@ class SpeedTestRunner:
 
 
 
-    def parse_result(self,result:dict) -> None:
-        self.download = result["download"]
-        self.upload = result["upload"]
-        self.ping = result['ping']
-
-        self.server_country = result["server"]["country"]
-        self.server_city = result["server"]["name"]
+    def parse_result(self, raw:dict) -> dict:
+        return {
+            "download":raw["download"],
+            "upload":raw["upload"],
+            "ping":raw["ping"],
+            "server_country":raw["server"]["country"],
+            "server_city":raw["server"]["name"]
+        }
 
 
 

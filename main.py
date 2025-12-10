@@ -1,3 +1,4 @@
+from infrastructure.csv_logger import CSVLogger
 from infrastructure.telegram_client import TelegramClient
 from core.speedtest_runner import SpeedTestRunner
 import yaml
@@ -28,13 +29,14 @@ def main() -> None:
 
     telegram_client = TelegramClient()
     speedtest_runner = SpeedTestRunner()
+    logger = CSVLogger(csv_path)
 
     service = SpeedtestService(
         runner=speedtest_runner,
         messenger=telegram_client,
         retry_count=RETRY_COUNT,
         retry_wait=RETRY_WAIT,
-        csv_path=csv_path
+        logger=logger
     )
 
     service.run()

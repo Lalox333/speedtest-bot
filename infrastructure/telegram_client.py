@@ -1,10 +1,11 @@
 import os
-from pprint import pprint
-
 from dotenv import load_dotenv
 import requests
+import logging
+from core.protocols.messenger_protocol import MessengerProtocol
+from pathlib import Path
 
-class TelegramClient:
+class TelegramClient(MessengerProtocol):
 
     def __init__(self) -> None:
         load_dotenv()
@@ -21,9 +22,9 @@ class TelegramClient:
 
         response = requests.post(base_url,data=payload)
         response.raise_for_status()
-        pprint(response.json())
+        logging.info(f"Message sent: {response.json()}")
 
-    def send_file(self,file_path:str,caption:str) -> None:
+    def send_file(self,file_path:Path,caption:str) -> None:
         base_url = f"https://api.telegram.org/bot{self.telegram_token}/sendDocument"
         payload = {
             "chat_id":self.telegram_chat_id,
