@@ -19,8 +19,8 @@ class CSVLogger(LoggerProtocol):
 
         record = {
             "date":now,
-            "download":speedtest_result.download,
-            "upload":speedtest_result.upload,
+            "download":speedtest_result.download_mbps,
+            "upload":speedtest_result.upload_mbps,
             "ping":speedtest_result.ping,
             "country":speedtest_result.location.country,
             "city":speedtest_result.location.city
