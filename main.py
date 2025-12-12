@@ -10,10 +10,10 @@ def main() -> None:
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(module)s - %(message)s',
-        handlers={
+        handlers=[
             logging.StreamHandler(),
             logging.FileHandler("logs/speedtest.log",mode="a",encoding='utf-8')
-        }
+        ]
     )
 
     logging.info("Speedtest-Bot started...")
@@ -39,7 +39,8 @@ def main() -> None:
         logger=logger
     )
 
-    service.run()
+    if not service.run():
+        logging.error("Speedtest failed completely")
 
 
 

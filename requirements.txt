@@ -1,3 +1,4 @@
+pytest
 pyyaml
 pandas
 speedtest-cli

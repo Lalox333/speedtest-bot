@@ -1,5 +1,8 @@
 import speedtest
+
+from core.domain.server_location import ServerLocation
 from core.protocols.runner_protocol import RunnerProtocol
+from core.domain.speedtest_result import SpeedtestResult
 
 class SpeedTestRunner(RunnerProtocol):
 
@@ -19,18 +22,15 @@ class SpeedTestRunner(RunnerProtocol):
         except Exception as e:
             return {"error":str(e)}
 
-
-
-
-    def parse_result(self, raw:dict) -> dict:
-        return {
-            "download":raw["download"],
-            "upload":raw["upload"],
-            "ping":raw["ping"],
-            "server_country":raw["server"]["country"],
-            "server_city":raw["server"]["name"]
-        }
-
-
+    def parse_result(self, raw:dict) -> SpeedtestResult:
+        return SpeedtestResult(
+            download=raw["download"],
+            upload=raw["upload"],
+            ping=raw["ping"],
+            location=ServerLocation(
+                country=raw["server"]["country"],
+                city=raw["server"]["name"]
+            )
+        )
 
 
